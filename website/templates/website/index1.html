@@ -420,6 +420,7 @@
           <a href="#projects" class="hover:text-green-400">./projects</a>
           <a href="#contact" class="hover:text-green-400">./contact</a>
 
+          <!-- Theme Buttons -->
           <div class="flex gap-2">
             <button onclick="setTheme('green')" class="text-green-400">
               G
@@ -429,6 +430,15 @@
               A
             </button>
           </div>
+
+          <!-- Switch Page Icon -->
+          <button
+            onclick="togglePage()"
+            class="ml-4 p-2 rounded border border-green-400 hover:bg-green-400 hover:text-black transition"
+            title="Switch Linux ↔ Windows"
+          >
+            🐧➡️🪟
+          </button>
         </div>
 
         <!-- Mobile Hamburger Icon -->
@@ -457,6 +467,21 @@
           <button onclick="setTheme('blue')" class="text-sky-400">B</button>
           <button onclick="setTheme('amber')" class="text-yellow-400">A</button>
         </div>
+
+        <!-- Mobile Switch Icon -->
+        <button
+          onclick="togglePage()"
+          class="mt-2 p-2 rounded border border-green-400 hover:bg-green-400 hover:text-black transition"
+          title="Switch Linux ↔ Windows"
+        >
+          <button
+            onclick="togglePage()"
+            class="mt-2 p-2 rounded border border-green-400 hover:bg-green-400 hover:text-black transition text-lg"
+            title="Switch Linux ↔ Windows"
+          >
+            🐧➡️🪟
+          </button>
+        </button>
       </div>
     </nav>
 
@@ -688,7 +713,6 @@
       </div>
     </section>
 
-    <!-- ================= CONTACT ================= -->
     <!-- ================= CONTACT ================= -->
     <section id="contact" class="py-24 border-t border-green-500/20 section-bg">
       <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row gap-12">
@@ -991,6 +1015,26 @@
         }
 
         typeMessage();
+      });
+    </script>
+
+    <!-- ================= SWITCH PAGE SCRIPT ================= -->
+    <script>
+      function togglePage() {
+        // If current URL includes 'linux', go to Windows page
+        if (window.location.pathname.includes("linux")) {
+          window.location.href = "{% url 'windows_home' %}";
+        } else {
+          // Otherwise, go to Linux page
+          window.location.href = "{% url 'linux_home' %}";
+        }
+      }
+
+      // Mobile menu toggle
+      const menuToggl = document.getElementById("menuToggle");
+      const mobileMen = document.getElementById("mobileMenu");
+      menuToggle.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
       });
     </script>
   </body>
