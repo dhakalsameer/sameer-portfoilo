@@ -1,6 +1,6 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <title>{{ profile.full_name }} | {{ profile.title }}</title>
@@ -9,9 +9,9 @@
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Google Fonts -->
+    <!-- Font -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
       rel="stylesheet"
     />
 
@@ -20,66 +20,72 @@
         theme: {
           extend: {
             fontFamily: {
-              poppins: ["Poppins", "sans-serif"],
+              inter: ["Inter", "sans-serif"],
             },
           },
         },
       };
     </script>
+
+    <style>
+      body {
+        font-family: Inter, sans-serif;
+        background: radial-gradient(circle at top, #2563eb33, #020617 70%);
+      }
+
+      .glass {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(14px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+
+      .glow {
+        box-shadow: 0 0 80px rgba(37, 99, 235, 0.35);
+      }
+    </style>
   </head>
 
-  <body class="bg-gray-100 text-gray-800 font-poppins">
+  <body class="text-gray-100">
     <!-- ================= NAVBAR ================= -->
-    <nav class="fixed top-0 w-full bg-white shadow z-50">
-      <div
-        class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center"
-      >
-        <h1 class="text-xl font-bold text-indigo-600">
-          {{ profile.full_name }}
-        </h1>
-
-        <div class="hidden md:flex gap-6">
-          <a href="#home" class="hover:text-indigo-600">Home</a>
-          <a href="#about" class="hover:text-indigo-600">About</a>
-          <a href="#skills" class="hover:text-indigo-600">Skills</a>
-          <a href="#projects" class="hover:text-indigo-600">Projects</a>
-          <a href="#certifications" class="hover:text-indigo-600"
-            >Certifications</a
-          >
-          <a href="#contact" class="hover:text-indigo-600">Contact</a>
-        </div>
+    <nav
+      class="fixed top-6 left-1/2 -translate-x-1/2 z-50 glass rounded-full px-10 py-4 shadow-xl"
+    >
+      <div class="flex gap-10 items-center">
+        <span class="font-semibold text-blue-400">{{ profile.full_name }}</span>
+        <a href="#home" class="hover:text-blue-400">Home</a>
+        <a href="#about" class="hover:text-blue-400">About</a>
+        <a href="#skills" class="hover:text-blue-400">Skills</a>
+        <a href="#projects" class="hover:text-blue-400">Projects</a>
+        <a href="#contact" class="hover:text-blue-400">Contact</a>
       </div>
     </nav>
 
     <!-- ================= HERO ================= -->
-    <section
-      id="home"
-      class="min-h-screen flex items-center pt-32 bg-gradient-to-br from-indigo-50 to-blue-100"
-    >
+    <section id="home" class="min-h-screen flex items-center pt-40">
       <div
-        class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center"
+        class="max-w-7xl mx-auto px-10 grid md:grid-cols-2 gap-16 items-center"
       >
         <!-- Text -->
         <div>
-          <h2 class="text-4xl md:text-5xl font-bold mb-4">
-            Hi, I'm <span class="text-indigo-600">{{ profile.full_name }}</span>
-          </h2>
+          <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
+            Hi, I'm <span class="text-blue-400">{{ profile.full_name }}</span>
+          </h1>
 
-          <p class="text-xl text-gray-600 mb-6">{{ profile.title }}</p>
+          <p class="text-xl text-gray-300 mb-6">{{ profile.title }}</p>
 
-          <p class="text-gray-700 mb-8">{{ profile.bio }}</p>
+          <p class="text-gray-400 max-w-xl mb-10">{{ profile.bio }}</p>
 
-          <div class="flex gap-4">
+          <div class="flex gap-6">
             <a
               href="#projects"
-              class="bg-indigo-600 text-white px-6 py-3 rounded-lg shadow hover:bg-indigo-700 transition"
+              class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-xl shadow-lg transition"
             >
               View Projects
             </a>
 
             <a
               href="mailto:{{ profile.email }}"
-              class="border border-indigo-600 text-indigo-600 px-6 py-3 rounded-lg hover:bg-indigo-600 hover:text-white transition"
+              class="border border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-black px-8 py-4 rounded-xl transition"
             >
               Contact Me
             </a>
@@ -89,28 +95,31 @@
         <!-- Image -->
         <div class="flex justify-center">
           {% if photos %}
-          <img
-            src="{{ photos.first.image.url }}"
-            class="w-64 h-64 object-cover rounded-full shadow-xl border-4 border-white"
-          />
+          <div class="relative">
+            <div class="absolute inset-0 rounded-full glow"></div>
+            <img
+              src="{{ photos.first.image.url }}"
+              class="relative w-72 h-72 object-cover rounded-full border-4 border-blue-500 shadow-2xl"
+            />
+          </div>
           {% endif %}
         </div>
       </div>
     </section>
 
     <!-- ================= ABOUT ================= -->
-    <section id="about" class="py-20 bg-white">
+    <section id="about" class="py-28">
       <div
-        class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center"
+        class="max-w-6xl mx-auto px-10 grid md:grid-cols-2 gap-16 items-center"
       >
-        <div>
-          <h2 class="text-3xl font-bold mb-4">About Me</h2>
-          <p class="text-gray-700 leading-relaxed">{{ profile.about }}</p>
+        <div class="glass rounded-3xl p-12 shadow-xl">
+          <h2 class="text-3xl font-bold mb-4 text-blue-400">About Me</h2>
+          <p class="text-gray-300 leading-relaxed">{{ profile.about }}</p>
         </div>
 
-        <div class="bg-indigo-50 p-8 rounded-xl shadow">
-          <h3 class="font-semibold text-lg mb-4">Quick Info</h3>
-          <ul class="space-y-2 text-gray-700">
+        <div class="glass rounded-3xl p-12 shadow-xl">
+          <h3 class="text-xl font-semibold mb-6">Profile</h3>
+          <ul class="space-y-3 text-gray-300">
             <li><strong>Name:</strong> {{ profile.full_name }}</li>
             <li><strong>Title:</strong> {{ profile.title }}</li>
             <li><strong>Email:</strong> {{ profile.email }}</li>
@@ -120,19 +129,19 @@
     </section>
 
     <!-- ================= SKILLS ================= -->
-    <section id="skills" class="py-20 bg-gray-50">
-      <div class="max-w-6xl mx-auto px-6">
-        <h2 class="text-3xl font-bold mb-10 text-center">Skills</h2>
+    <section id="skills" class="py-28">
+      <div class="max-w-6xl mx-auto px-10">
+        <h2 class="text-4xl font-bold text-center mb-16">Skills</h2>
 
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-10">
           {% for skill in skills %}
           <div
-            class="bg-white shadow rounded-lg p-6 flex flex-col items-center hover:shadow-lg transition"
+            class="glass rounded-2xl p-8 text-center hover:scale-105 transition shadow-xl"
           >
             {% if skill.icon %}
-            <img src="{{ skill.icon.url }}" class="w-12 h-12 mb-3" />
+            <img src="{{ skill.icon.url }}" class="w-14 h-14 mx-auto mb-4" />
             {% endif %}
-            <p class="font-medium">{{ skill.name }}</p>
+            <p class="font-semibold">{{ skill.name }}</p>
           </div>
           {% endfor %}
         </div>
@@ -140,33 +149,31 @@
     </section>
 
     <!-- ================= PROJECTS ================= -->
-    <section id="projects" class="py-20 bg-white">
-      <div class="max-w-6xl mx-auto px-6">
-        <h2 class="text-3xl font-bold mb-10 text-center">Projects</h2>
+    <section id="projects" class="py-28">
+      <div class="max-w-7xl mx-auto px-10">
+        <h2 class="text-4xl font-bold text-center mb-16">Projects</h2>
 
-        <div class="grid md:grid-cols-2 gap-8">
+        <div class="grid md:grid-cols-2 gap-14">
           {% for project in projects %}
           <div
-            class="bg-gray-50 rounded-xl shadow hover:shadow-lg transition overflow-hidden"
+            class="glass rounded-3xl overflow-hidden shadow-xl hover:scale-[1.02] transition"
           >
             <img
               src="{{ project.image.url }}"
-              class="w-full h-56 object-cover"
+              class="w-full h-64 object-cover"
             />
 
-            <div class="p-6">
-              <h3 class="text-xl font-semibold mb-2">{{ project.title }}</h3>
-              <p class="text-gray-600 mb-3">{{ project.description }}</p>
-              <p class="text-sm text-indigo-600 mb-4">
-                {{ project.tech_stack }}
-              </p>
+            <div class="p-10">
+              <h3 class="text-2xl font-semibold mb-3">{{ project.title }}</h3>
+              <p class="text-gray-400 mb-4">{{ project.description }}</p>
+              <p class="text-blue-400 mb-6">{{ project.tech_stack }}</p>
 
-              <div class="flex gap-4">
+              <div class="flex gap-6">
                 {% if project.live_link %}
                 <a
                   href="{{ project.live_link }}"
                   target="_blank"
-                  class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition"
+                  class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-xl transition"
                 >
                   Live Demo
                 </a>
@@ -174,7 +181,7 @@
                 <a
                   href="{{ project.github_link }}"
                   target="_blank"
-                  class="border border-indigo-600 text-indigo-600 px-4 py-2 rounded hover:bg-indigo-600 hover:text-white transition"
+                  class="border border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-black px-6 py-3 rounded-xl transition"
                 >
                   GitHub
                 </a>
@@ -187,101 +194,59 @@
       </div>
     </section>
 
-    <!-- ================= CERTIFICATIONS ================= -->
-    <section id="certifications" class="py-20 bg-gray-50">
-      <div class="max-w-6xl mx-auto px-6">
-        <h2 class="text-3xl font-bold mb-10 text-center">Certifications</h2>
-
-        <div class="grid md:grid-cols-2 gap-6">
-          {% for cert in certifications %}
-          <div class="bg-white shadow rounded-lg p-6 flex gap-4">
-            {% if cert.image %}
-            <img
-              src="{{ cert.image.url }}"
-              class="w-32 h-32 object-cover rounded"
-            />
-            {% endif %}
-
-            <div>
-              <h3 class="text-lg font-semibold">{{ cert.title }}</h3>
-              <p class="text-gray-600">{{ cert.description }}</p>
-              <p class="text-sm text-indigo-600 mt-2">{{ cert.issuer }}</p>
-
-              {% if cert.certificate_url %}
-              <a
-                href="{{ cert.certificate_url }}"
-                target="_blank"
-                class="inline-block mt-2 text-indigo-600 underline"
-              >
-                View Certificate
-              </a>
-              {% endif %}
-            </div>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-    </section>
-
     <!-- ================= CONTACT ================= -->
-    <section id="contact" class="py-20 bg-white">
-      <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12">
-        <div>
-          <h2 class="text-3xl font-bold mb-4">Contact Me</h2>
-          <p class="text-gray-600 mb-6">
-            Feel free to reach out for collaborations or just a friendly hello
-            👋
+    <section id="contact" class="py-28">
+      <div class="max-w-6xl mx-auto px-10 grid md:grid-cols-2 gap-16">
+        <div class="glass rounded-3xl p-12 shadow-xl">
+          <h2 class="text-3xl font-bold mb-4 text-blue-400">Contact Me</h2>
+          <p class="text-gray-400 mb-6">
+            Let's build something amazing together 🚀
           </p>
 
-          <p class="mb-2"><strong>Email:</strong> {{ profile.email }}</p>
+          <p class="mb-2">📧 {{ profile.email }}</p>
 
           {% if profile.github %}
           <p class="mb-2">
-            <strong>GitHub:</strong>
-            <a href="{{ profile.github }}" class="text-indigo-600">Visit</a>
+            🐙 <a href="{{ profile.github }}" class="text-blue-400">GitHub</a>
           </p>
           {% endif %} {% if profile.linkedin %}
           <p class="mb-2">
-            <strong>LinkedIn:</strong>
-            <a href="{{ profile.linkedin }}" class="text-indigo-600">Visit</a>
+            💼
+            <a href="{{ profile.linkedin }}" class="text-blue-400">LinkedIn</a>
           </p>
           {% endif %}
         </div>
 
-        <!-- Contact Form -->
+        <!-- Form -->
         <form
           method="POST"
           action="{% url 'contact_send_email' %}"
-          class="bg-gray-50 p-8 rounded-xl shadow"
+          class="glass rounded-3xl p-12 shadow-xl"
         >
           {% csrf_token %}
           <input
             type="text"
             name="name"
             placeholder="Your Name"
-            class="w-full p-3 mb-4 border rounded"
-            required
+            class="w-full p-4 mb-4 rounded-xl bg-black/40 border border-blue-400/30"
           />
 
           <input
             type="email"
             name="email"
             placeholder="Your Email"
-            class="w-full p-3 mb-4 border rounded"
-            required
+            class="w-full p-4 mb-4 rounded-xl bg-black/40 border border-blue-400/30"
           />
 
           <textarea
             name="message"
-            placeholder="Your Message"
             rows="4"
-            class="w-full p-3 mb-4 border rounded"
-            required
+            placeholder="Your Message"
+            class="w-full p-4 mb-6 rounded-xl bg-black/40 border border-blue-400/30"
           ></textarea>
 
           <button
-            type="submit"
-            class="bg-indigo-600 text-white px-6 py-3 rounded hover:bg-indigo-700 transition"
+            class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-xl transition"
           >
             Send Message
           </button>
@@ -290,8 +255,8 @@
     </section>
 
     <!-- ================= FOOTER ================= -->
-    <footer class="py-6 text-center bg-gray-900 text-gray-400">
-      © {{ profile.full_name }} — All rights reserved
+    <footer class="py-8 text-center text-gray-500">
+      © {{ profile.full_name }} — Windows UI Portfolio
     </footer>
   </body>
 </html>
