@@ -1,19 +1,29 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
   <head>
     <meta charset="UTF-8" />
     <title>{{ profile.full_name }} | {{ profile.title }}</title>
+
+    <!-- SEO -->
+    <meta name="description" content="{{ profile.bio|truncatechars:160 }}" />
+    <meta name="author" content="{{ profile.full_name }}" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <!-- Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Font -->
+    <!-- Fonts -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@300;400;600&family=Fira+Code:wght@400;500;700&display=swap"
       rel="stylesheet"
     />
+
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+    </style>
 
     <script>
       tailwind.config = {
@@ -21,6 +31,8 @@
           extend: {
             fontFamily: {
               inter: ["Inter", "sans-serif"],
+              mono: ["JetBrains Mono", "monospace"],
+              fira: ["Fira Code", "monospace"],
             },
           },
         },
@@ -30,161 +42,300 @@
     <style>
       body {
         font-family: Inter, sans-serif;
-        background: radial-gradient(circle at top, #2563eb33, #020617 70%);
+        transition: background-color 0.3s ease, color 0.3s ease;
       }
 
-      .glass {
-        background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(14px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
+      /* ========= THEMES ========= */
+      [data-theme="dark"] {
+        --bg: #020617;
+        --bg-soft: #020617;
+        --card: #0b1220;
+        --text: #e5e7eb;
+        --muted: #94a3b8;
+        --accent: #6366f1;
+      }
+      [data-theme="light"] {
+        --bg: #f8fafc;
+        --bg-soft: #ffffff;
+        --card: #ffffff;
+        --text: #020617;
+        --muted: #475569;
+        --accent: #4f46e5;
+      }
+      body {
+        background: var(--bg);
+        color: var(--text);
       }
 
-      .glow {
-        box-shadow: 0 0 80px rgba(37, 99, 235, 0.35);
+      .muted {
+        color: var(--muted);
+      }
+      .accent {
+        color: var(--accent);
+      }
+
+      .card {
+        background: var(--card);
+        border-radius: 14px;
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35),
+          inset 0 1px 0 rgba(255, 255, 255, 0.03);
+        transition: transform 0.25s ease;
+      }
+      .card:hover {
+        transform: translateY(-4px);
+      }
+
+      .fade-up {
+        opacity: 0;
+        transform: translateY(24px);
+        animation: fadeUp 0.9s ease forwards;
+      }
+      @keyframes fadeUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .img-fade {
+        transition: opacity 0.8s ease;
+      }
+      .hero-glow::before {
+        content: "";
+        position: absolute;
+        inset: -30%;
+        background: radial-gradient(circle, var(--accent), transparent 60%);
+        opacity: 0.15;
+        z-index: -1;
+      }
+
+      .cursor {
+        display: inline-block;
+        width: 1ch;
+        background-color: var(--accent);
+        animation: blink 1.2s infinite;
+      }
+      @keyframes blink {
+        0%,
+        50%,
+        100% {
+          opacity: 1;
+        }
+        25%,
+        75% {
+          opacity: 0;
+        }
+      }
+
+      #roleText {
+        font-weight: 600;
+        color: var(--accent);
+        text-shadow: 0 0 15px rgba(99, 102, 241, 0.7);
+      }
+
+      .project-live-btn,
+      .cert-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border-radius: 9999px;
+        border: 2px solid var(--accent);
+        background-color: rgba(99, 102, 241, 0.1);
+        color: var(--accent);
+        text-decoration: none;
+        transition: all 0.3s;
+      }
+      .project-live-btn:hover,
+      .cert-link:hover {
+        background-color: var(--accent);
+        color: #000;
+        transform: translateY(-2px) scale(1.05);
+        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
       }
     </style>
   </head>
 
-  <body class="text-gray-100">
+  <body>
     <!-- ================= NAVBAR ================= -->
     <nav
-      class="fixed top-6 left-1/2 -translate-x-1/2 z-50 glass rounded-full px-10 py-4 shadow-xl"
+      class="fixed top-0 w-full z-50 backdrop-blur border-b border-black/10 dark:border-white/10"
+      style="background: var(--bg-soft)"
     >
-      <div class="flex gap-10 items-center">
-        <span class="font-semibold text-blue-400">{{ profile.full_name }}</span>
-        <a href="#home" class="hover:text-blue-400">Home</a>
-        <a href="#about" class="hover:text-blue-400">About</a>
-        <a href="#skills" class="hover:text-blue-400">Skills</a>
-        <a href="#projects" class="hover:text-blue-400">Projects</a>
-        <a href="#contact" class="hover:text-blue-400">Contact</a>
+      <div
+        class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center"
+      >
+        <span class="font-bold accent">{{ profile.full_name }}</span>
+
+        <!-- Desktop Menu -->
+        <div class="hidden md:flex items-center gap-4">
+          <a href="#home" class="hover:accent">Home</a>
+          <a href="#about-skills" class="hover:accent">About</a>
+          <a href="#projects" class="hover:accent">Projects</a>
+          <a href="#certifications" class="hover:accent">Certifications</a>
+          <a href="#contact" class="hover:accent">Contact</a>
+
+          <!-- Theme Toggle -->
+          <button
+            id="themeToggle"
+            class="border border-black/10 dark:border-white/20 px-3 py-1 rounded text-sm hover:border-[var(--accent)]"
+          >
+            Toggle
+          </button>
+
+          <!-- Linux ↔ Windows Switch -->
+          <button
+            id="pageSwitch"
+            class="border border-black/10 dark:border-white/20 px-3 py-1 rounded text-sm hover:border-[var(--accent)]"
+            title="Switch Linux ↔ Windows"
+          >
+            🐧
+          </button>
+        </div>
+
+        <!-- Mobile Hamburger -->
+        <button
+          id="menuToggle"
+          class="md:hidden text-lg border border-black/10 dark:border-white/20 px-3 py-1 rounded hover:border-[var(--accent)]"
+        >
+          ☰
+        </button>
+      </div>
+
+      <!-- Mobile Menu -->
+      <div
+        id="mobileMenu"
+        class="hidden flex-col gap-4 px-6 pb-6 bg-[var(--bg-soft)] md:hidden"
+      >
+        <a href="#home" class="hover:accent">Home</a>
+        <a href="#about-skills" class="hover:accent">About</a>
+        <a href="#projects" class="hover:accent">Projects</a>
+        <a href="#certifications" class="hover:accent">Certifications</a>
+        <a href="#contact" class="hover:accent">Contact</a>
+
+        <button
+          id="themeToggleMobile"
+          class="border border-black/10 dark:border-white/20 px-3 py-1 rounded text-sm hover:border-[var(--accent)]"
+        >
+          Toggle Theme
+        </button>
+        <button
+          id="pageSwitchMobile"
+          class="border border-black/10 dark:border-white/20 px-3 py-1 rounded text-sm hover:border-[var(--accent)]"
+          title="Switch Linux ↔ Windows"
+        >
+          🐧
+        </button>
       </div>
     </nav>
 
-    <!-- ================= HERO ================= -->
-    <section id="home" class="min-h-screen flex items-center pt-40">
+    <section
+      id="home"
+      class="min-h-screen flex flex-col-reverse md:flex-row items-center pt-32 relative overflow-hidden"
+    >
+      <div class="hero-glow absolute inset-0"></div>
       <div
-        class="max-w-7xl mx-auto px-10 grid md:grid-cols-2 gap-16 items-center"
+        class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-14 items-center"
       >
-        <!-- Text -->
-        <div>
-          <h1 class="text-5xl md:text-6xl font-bold mb-6 leading-tight">
-            Hi, I'm <span class="text-blue-400">{{ profile.full_name }}</span>
+        <!-- TEXT -->
+        <div class="space-y-6 text-center md:text-left">
+          <h1 class="text-4xl md:text-6xl font-bold fade-up">
+            Hi, I’m
+            <span class="block mt-2 accent">{{ profile.full_name }}</span>
           </h1>
-
-          <p class="text-xl text-gray-300 mb-6">{{ profile.title }}</p>
-
-          <p class="text-gray-400 max-w-xl mb-10">{{ profile.bio }}</p>
-
-          <div class="flex gap-6">
+          <p class="text-xl md:text-2xl muted fade-up">
+            <span
+              id="roleText"
+              data-roles='[{% for role in roles %}"{{ role.title }}"{% if not forloop.last %},{% endif %}{% endfor %}]'
+            ></span>
+          </p>
+          <p class="max-w-xl muted fade-up mx-auto md:mx-0">
+            {{ profile.bio }}
+          </p>
+          <div
+            class="flex flex-col sm:flex-row justify-center md:justify-start gap-4 fade-up"
+          >
             <a
               href="#projects"
-              class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-xl shadow-lg transition"
+              class="bg-[var(--accent)] text-white px-7 py-3 rounded-xl font-medium hover:scale-105 transition text-center"
+              >View Projects</a
             >
-              View Projects
-            </a>
-
             <a
-              href="mailto:{{ profile.email }}"
-              class="border border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-black px-8 py-4 rounded-xl transition"
+              href="{{ profile.resume.url }}"
+              download
+              class="border border-[var(--accent)] px-7 py-3 rounded-xl hover:bg-[var(--accent)] hover:text-white transition text-center"
+              >Resume</a
             >
-              Contact Me
-            </a>
           </div>
         </div>
 
-        <!-- Image -->
-        <div class="flex justify-center">
-          {% if photos %}
-          <div class="relative">
-            <div class="absolute inset-0 rounded-full glow"></div>
+        <!-- IMAGE -->
+        <div class="flex justify-center md:justify-end fade-up mb-8 md:mb-0">
+          <div class="relative w-48 h-48 sm:w-64 sm:h-64 md:w-80 md:h-80">
+            {% for photo in photos %}
             <img
-              src="{{ photos.first.image.url }}"
-              class="relative w-72 h-72 object-cover rounded-full border-4 border-blue-500 shadow-2xl"
+              src="{{ photo.image.url }}"
+              class="absolute inset-0 w-full h-full object-cover rounded-3xl shadow-xl img-fade {% if forloop.first %}opacity-100{% else %}opacity-0{% endif %}"
             />
+            {% endfor %}
           </div>
-          {% endif %}
         </div>
       </div>
     </section>
 
-    <!-- ================= ABOUT ================= -->
-    <section id="about" class="py-28">
-      <div
-        class="max-w-6xl mx-auto px-10 grid md:grid-cols-2 gap-16 items-center"
-      >
-        <div class="glass rounded-3xl p-12 shadow-xl">
-          <h2 class="text-3xl font-bold mb-4 text-blue-400">About Me</h2>
-          <p class="text-gray-300 leading-relaxed">{{ profile.about }}</p>
+    <!-- ================= ABOUT + SKILLS ================= -->
+    <section
+      id="about-skills"
+      class="py-24 border-t border-black/10 dark:border-white/10"
+    >
+      <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12">
+        <div>
+          <h2 class="text-3xl font-semibold mb-6">About Me</h2>
+          <p class="muted leading-relaxed">{{ profile.about }}</p>
         </div>
-
-        <div class="glass rounded-3xl p-12 shadow-xl">
-          <h3 class="text-xl font-semibold mb-6">Profile</h3>
-          <ul class="space-y-3 text-gray-300">
-            <li><strong>Name:</strong> {{ profile.full_name }}</li>
-            <li><strong>Title:</strong> {{ profile.title }}</li>
-            <li><strong>Email:</strong> {{ profile.email }}</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- ================= SKILLS ================= -->
-    <section id="skills" class="py-28">
-      <div class="max-w-6xl mx-auto px-10">
-        <h2 class="text-4xl font-bold text-center mb-16">Skills</h2>
-
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-10">
-          {% for skill in skills %}
-          <div
-            class="glass rounded-2xl p-8 text-center hover:scale-105 transition shadow-xl"
-          >
-            {% if skill.icon %}
-            <img src="{{ skill.icon.url }}" class="w-14 h-14 mx-auto mb-4" />
-            {% endif %}
-            <p class="font-semibold">{{ skill.name }}</p>
+        <div>
+          <h2 class="text-3xl font-semibold mb-6">Skills</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            {% for skill in skills %}
+            <div class="card p-4 text-center font-medium">{{ skill.name }}</div>
+            {% endfor %}
           </div>
-          {% endfor %}
         </div>
       </div>
     </section>
 
     <!-- ================= PROJECTS ================= -->
-    <section id="projects" class="py-28">
-      <div class="max-w-7xl mx-auto px-10">
-        <h2 class="text-4xl font-bold text-center mb-16">Projects</h2>
-
-        <div class="grid md:grid-cols-2 gap-14">
+    <section id="projects" class="py-24 bg-black/5 dark:bg-white/5">
+      <div class="max-w-6xl mx-auto px-6">
+        <h2 class="text-3xl font-semibold mb-12 text-center">Projects</h2>
+        <div class="grid md:grid-cols-2 gap-8">
           {% for project in projects %}
-          <div
-            class="glass rounded-3xl overflow-hidden shadow-xl hover:scale-[1.02] transition"
-          >
+          <div class="card overflow-hidden">
             <img
               src="{{ project.image.url }}"
-              class="w-full h-64 object-cover"
+              class="w-full h-48 object-cover"
             />
-
-            <div class="p-10">
-              <h3 class="text-2xl font-semibold mb-3">{{ project.title }}</h3>
-              <p class="text-gray-400 mb-4">{{ project.description }}</p>
-              <p class="text-blue-400 mb-6">{{ project.tech_stack }}</p>
-
-              <div class="flex gap-6">
-                {% if project.live_link %}
-                <a
-                  href="{{ project.live_link }}"
-                  target="_blank"
-                  class="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-xl transition"
-                >
-                  Live Demo
-                </a>
-                {% endif %} {% if project.github_link %}
+            <div class="p-6">
+              <h3 class="text-xl md:text-2xl font-bold tracking-tight mb-2">
+                {{ project.title }}
+              </h3>
+              <div class="w-10 h-1 bg-[var(--accent)] rounded mb-3"></div>
+              <p class="muted mb-3">{{ project.description }}</p>
+              <p class="text-sm accent mb-4">{{ project.tech_stack }}</p>
+              <div class="flex flex-wrap gap-4">
                 <a
                   href="{{ project.github_link }}"
                   target="_blank"
-                  class="border border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-black px-6 py-3 rounded-xl transition"
+                  class="accent"
+                  >GitHub</a
                 >
-                  GitHub
-                </a>
+                {% if project.live_link %}
+                <a href="{{ project.live_link }}" target="_blank" class="accent"
+                  >Live</a
+                >
                 {% endif %}
               </div>
             </div>
@@ -194,69 +345,246 @@
       </div>
     </section>
 
+    <!-- ================= CERTIFICATIONS ================= -->
+    <section
+      id="certifications"
+      class="py-24 border-t border-black/10 dark:border-white/10"
+    >
+      <div class="max-w-6xl mx-auto px-6">
+        <h2 class="text-3xl font-semibold mb-12 text-center">Certifications</h2>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {% for cert in certifications %}
+          <div class="card p-6 group relative hover:shadow-lg transition">
+            {% if cert.image %}
+            <img
+              src="{{ cert.image.url }}"
+              alt="{{ cert.title }}"
+              class="w-full h-48 object-cover rounded-xl mb-4 clickable-img transition-transform duration-300 group-hover:scale-105"
+            />
+            {% endif %}
+            <h3 class="font-semibold text-lg mb-1">{{ cert.title }}</h3>
+            <p class="text-sm muted mb-2">{{ cert.organization }}</p>
+            <p class="text-xs muted mb-3">
+              Issued by: {{ cert.issuer }} | Date: {{ cert.date_awarded }}
+            </p>
+            {% if cert.certificate_url %}
+            <a
+              href="{{ cert.certificate_url }}"
+              target="_blank"
+              class="border border-[var(--accent)] px-4 py-2 rounded hover:bg-[var(--accent)] hover:text-white transition inline-block text-sm font-medium"
+              >View Certificate →</a
+            >
+            {% endif %}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
     <!-- ================= CONTACT ================= -->
-    <section id="contact" class="py-28">
-      <div class="max-w-6xl mx-auto px-10 grid md:grid-cols-2 gap-16">
-        <div class="glass rounded-3xl p-12 shadow-xl">
-          <h2 class="text-3xl font-bold mb-4 text-blue-400">Contact Me</h2>
-          <p class="text-gray-400 mb-6">
-            Let's build something amazing together 🚀
+    <section
+      id="contact"
+      class="py-24 border-t border-black/10 dark:border-white/10"
+    >
+      <div class="max-w-6xl mx-auto px-6 grid md:grid-cols-2 gap-12">
+        <div
+          class="bg-[var(--card)] p-6 rounded-xl shadow-lg flex flex-col gap-4"
+        >
+          <h2 class="text-3xl font-semibold mb-4">Get in Touch</h2>
+          <p class="text-muted mb-2">Reach me via the following channels:</p>
+          <p class="text-gray-400">
+            Email:
+            <a
+              href="mailto:{{ profile.email }}"
+              class="underline accent hover:text-[var(--accent)]"
+              >{{ profile.email }}</a
+            >
           </p>
-
-          <p class="mb-2">📧 {{ profile.email }}</p>
-
-          {% if profile.github %}
-          <p class="mb-2">
-            🐙 <a href="{{ profile.github }}" class="text-blue-400">GitHub</a>
+          {% if profile.linkedin %}
+          <p class="text-gray-400">
+            LinkedIn:
+            <a
+              href="{{ profile.linkedin }}"
+              target="_blank"
+              class="underline accent hover:text-[var(--accent)]"
+              >profile</a
+            >
           </p>
-          {% endif %} {% if profile.linkedin %}
-          <p class="mb-2">
-            💼
-            <a href="{{ profile.linkedin }}" class="text-blue-400">LinkedIn</a>
+          {% endif %} {% if profile.github %}
+          <p class="text-gray-400">
+            GitHub:
+            <a
+              href="{{ profile.github }}"
+              target="_blank"
+              class="underline accent hover:text-[var(--accent)]"
+              >repo</a
+            >
+          </p>
+          {% endif %} {% if profile.facebook %}
+          <p class="text-gray-400">
+            Facebook:
+            <a
+              href="{{ profile.facebook }}"
+              target="_blank"
+              class="underline accent hover:text-[var(--accent)]"
+              >profile</a
+            >
+          </p>
+          {% endif %} {% if profile.twitter %}
+          <p class="text-gray-400">
+            Twitter:
+            <a
+              href="{{ profile.twitter }}"
+              target="_blank"
+              class="underline accent hover:text-[var(--accent)]"
+              >profile</a
+            >
           </p>
           {% endif %}
         </div>
 
-        <!-- Form -->
-        <form
-          method="POST"
-          action="{% url 'contact_send_email' %}"
-          class="glass rounded-3xl p-12 shadow-xl"
-        >
-          {% csrf_token %}
-          <input
-            type="text"
-            name="name"
-            placeholder="Your Name"
-            class="w-full p-4 mb-4 rounded-xl bg-black/40 border border-blue-400/30"
-          />
-
-          <input
-            type="email"
-            name="email"
-            placeholder="Your Email"
-            class="w-full p-4 mb-4 rounded-xl bg-black/40 border border-blue-400/30"
-          />
-
-          <textarea
-            name="message"
-            rows="4"
-            placeholder="Your Message"
-            class="w-full p-4 mb-6 rounded-xl bg-black/40 border border-blue-400/30"
-          ></textarea>
-
-          <button
-            class="bg-blue-600 hover:bg-blue-700 px-8 py-4 rounded-xl transition"
+        <div class="bg-[var(--card)] p-6 rounded-xl shadow-lg">
+          <h2 class="text-3xl font-semibold mb-4">Send Me a Message</h2>
+          <form
+            method="POST"
+            action="{% url 'contact_send_email' %}"
+            class="flex flex-col gap-4"
           >
-            Send Message
-          </button>
-        </form>
+            {% csrf_token %}
+            <input
+              type="text"
+              name="name"
+              placeholder="Your Name"
+              required
+              class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent)] transition"
+            />
+            <input
+              type="email"
+              name="email"
+              placeholder="Your Email"
+              required
+              class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent)] transition"
+            />
+            <textarea
+              name="message"
+              placeholder="Your Message"
+              rows="5"
+              required
+              class="w-full px-4 py-3 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-[var(--accent)] transition"
+            ></textarea>
+            <button
+              type="submit"
+              class="bg-[var(--accent)] text-white px-6 py-3 rounded-lg font-medium hover:scale-105 transition-transform"
+            >
+              Send Message
+            </button>
+          </form>
+          {% if messages %}
+          <p class="mt-4 text-green-400 text-sm">
+            {% for message in messages %}{{ message }}{% endfor %}
+          </p>
+          {% endif %}
+        </div>
       </div>
     </section>
 
-    <!-- ================= FOOTER ================= -->
-    <footer class="py-8 text-center text-gray-500">
-      © {{ profile.full_name }} — Windows UI Portfolio
+    <footer
+      class="py-8 text-center muted border-t border-black/10 dark:border-white/10"
+    >
+      © {{ now|date:"Y" }} {{ profile.full_name }}
     </footer>
+
+    <!-- ================= SCRIPTS ================= -->
+    <script>
+      // Typing roles
+      (() => {
+        const el = document.getElementById("roleText");
+        if (!el) return;
+        const roles = JSON.parse(el.dataset.roles || "[]");
+        let i = 0,
+          j = 0,
+          del = false;
+        function loop() {
+          const w = roles[i];
+          el.textContent = del ? w.slice(0, --j) : w.slice(0, ++j);
+          if (!del && j === w.length) setTimeout(() => (del = true), 1200);
+          if (del && j === 0) {
+            del = false;
+            i = (i + 1) % roles.length;
+          }
+          setTimeout(loop, del ? 50 : 80);
+        }
+        loop();
+      })();
+
+      // Image rotation
+      (() => {
+        const imgs = document.querySelectorAll(".img-fade");
+        let i = 0;
+        if (imgs.length > 1)
+          setInterval(() => {
+            imgs[i].classList.replace("opacity-100", "opacity-0");
+            i = (i + 1) % imgs.length;
+            imgs[i].classList.replace("opacity-0", "opacity-100");
+          }, 4000);
+      })();
+
+      // Theme toggle (desktop & mobile)
+      const themeBtns = [
+        document.getElementById("themeToggle"),
+        document.getElementById("themeToggleMobile"),
+      ];
+      const root = document.documentElement;
+      const savedTheme = localStorage.getItem("theme") || "dark";
+      root.setAttribute("data-theme", savedTheme);
+      themeBtns.forEach((btn) =>
+        btn.addEventListener("click", () => {
+          const next =
+            root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+          root.setAttribute("data-theme", next);
+          localStorage.setItem("theme", next);
+        })
+      );
+
+      // Linux ↔ Windows toggle
+      const pageSwitch = document.getElementById("pageSwitch");
+      const pageSwitchMobile = document.getElementById("pageSwitchMobile");
+      function updateSwitchIcon(btn) {
+        btn.textContent = window.location.pathname.includes("linux")
+          ? "🪟"
+          : "🐧";
+      }
+      updateSwitchIcon(pageSwitch);
+      updateSwitchIcon(pageSwitchMobile);
+      pageSwitch.addEventListener("click", () => {
+        window.location.href = window.location.pathname.includes("linux")
+          ? "{% url 'windows_home' %}"
+          : "{% url 'linux_home' %}";
+      });
+      pageSwitchMobile.addEventListener("click", () => {
+        window.location.href = window.location.pathname.includes("linux")
+          ? "{% url 'windows_home' %}"
+          : "{% url 'linux_home' %}";
+      });
+
+      // Mobile menu toggle
+      const menuToggle = document.getElementById("menuToggle");
+      const mobileMenu = document.getElementById("mobileMenu");
+      menuToggle.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+      });
+    </script>
+
+    <script>
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      });
+    </script>
   </body>
 </html>
